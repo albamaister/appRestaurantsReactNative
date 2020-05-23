@@ -1,9 +1,11 @@
 import React from 'react';
 import { StyleSheet, View, ScrollView, Text, Image } from 'react-native';
 import { Button } from 'react-native-elements';
+import {useNavigation} from '@react-navigation/native';
 
 export default function UserGuest() {
-    
+    const navigation = useNavigation();
+
     return (
         <ScrollView centerContent={true} style={styles.viewBody}>
             <Image 
@@ -16,7 +18,7 @@ export default function UserGuest() {
             En esta app encontrarás un sinfín de restaurantes saludables, vegetarianos. Si eres un restaurante que cumple alguna de las anteriores categorías pide que te incluyan en el directorio de la app.
             </Text>
             <View style={styles.viewBtn}>
-                <Button buttonStyle={styles.btnStyle} containerStyle={styles.btnContainer} title='Ver tu perfil' onPress={() => console.log('Click!!!')}/>
+                <Button buttonStyle={styles.btnStyle} containerStyle={styles.btnContainer} title='Ver tu perfil' onPress={() => navigation.navigate('login')}/>
             </View>
         </ScrollView>
     )
