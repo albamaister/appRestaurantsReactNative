@@ -1,25 +1,51 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Input, Icon, Button} from 'react-native-elements';
 
 export default function RegisterForm() {
+    const [showPassword, sertShowPassword] = useState(false);
+    const [showRepeatPassword, setShowRepeatPassword] = useState(false)
+
     return (
         <View style={styles.formContainer}>
             <Input
                 placeholder='Correo electronico'
                 containerStyle={styles.inputForm}
+                rightIcon={
+                    <Icon
+                        type='material-community'
+                        name='at'
+                        iconStyle={styles.iconRight}
+                    />
+                }
             />
             <Input
                 placeholder='Password'
                 containerStyle={styles.inputForm} 
                 password={true}
-                secureTextEntry={true}
+                secureTextEntry={showPassword ? false : true}
+                rightIcon={
+                    <Icon
+                        type='material-community'
+                        name={ showPassword ? 'eye-off-outline' : 'eye-outline' }
+                        iconStyle={styles.iconRight}
+                        onPress={() => sertShowPassword(!showPassword)}
+                    />
+                }
             />
             <Input
                 placeholder='Repetir passwordsss'
                 containerStyle={styles.inputForm} 
                 password={true}
-                secureTextEntry={true}   
+                secureTextEntry={showRepeatPassword ? false : true}
+                rightIcon={
+                    <Icon
+                        type='material-community'
+                        name={ showRepeatPassword ? 'eye-off-outline' : 'eye-outline' }
+                        iconStyle={styles.iconRight}
+                        onPress={() => setShowRepeatPassword(!showRepeatPassword)}
+                    />
+                }   
             />
             <Button
                 title='Unirse'
@@ -32,9 +58,9 @@ export default function RegisterForm() {
 
 const styles = StyleSheet.create({
     formContainer: {
-        // flex: 1,
-        // alignItems: 'center',
-        // justifyContent: 'center',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
         marginTop: 30
     },
     inputForm: {
@@ -47,5 +73,8 @@ const styles = StyleSheet.create({
     },
     btnRegister: {
         backgroundColor: '#00a680'
+    },
+    iconRight: {
+        color: '#c1c1c1'
     }
 });
