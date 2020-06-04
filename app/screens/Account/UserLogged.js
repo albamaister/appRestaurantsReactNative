@@ -7,7 +7,7 @@ import Toast from 'react-native-easy-toast';
 import InfoUser from './InfoUser';
 
 export default function UserLogged() {
-    const [userInfo, setUserInfo] = useState({});
+    const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(false);
     const [loadingText, setLoadingText] = useState('');
     const toastRef = useRef();
@@ -20,7 +20,7 @@ export default function UserLogged() {
     return (
         <View style={styles.viewUserInfo}>
             { userInfo &&
-            <InfoUser ref={toastRef} userInfo={userInfo}/>        
+            <InfoUser userInfo={userInfo} toastRef={toastRef}/>        
             }
             <Text>AccountOptions</Text>
             <Button 
