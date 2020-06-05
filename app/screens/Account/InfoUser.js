@@ -7,7 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function InfoUser(props) {
 
-    const { toastRef, userInfo: {uid, photoURL, displayName, email} } = props;
+    const { toastRef, userInfo: {uid, photoURL, displayName, email}, setLoading, setLoadingText } = props;
     
     const changeAvatar = async () => {
         const resultPermissions = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -24,7 +24,7 @@ export default function InfoUser(props) {
                 toastRef.current.show('Has cerrado la seleccion de imagenes');
             } else {
                 uploadImage(result.uri).then(() => {
-                    console.log('Imagen subida');
+                    updatePhotoUrl();
                 }).catch(() => {
                     toastRef.current.show('Error al actualizar el avatar');
                 });
@@ -33,11 +33,30 @@ export default function InfoUser(props) {
     }
 
     const uploadImage = async (uri) => {
+        setLoadingText('Actualizando avatar');
+        setLoading(true);
         const response = await fetch(uri);
         const blob = await response.blob();
         const ref = firebase.storage().ref().child(`avatar/${uid}`);
         return ref.put(blob);
-    }    
+    }   
+    
+    const updatePhotoUrl = () => {
+        firebase
+            .storage()
+            .ref(`avatar/${uid}`)
+            .getDownloadURL()
+            .then(async (response) => {
+                const update = {                    
+                    photoURL: response
+                };
+                await firebase.auth().currentUser.updateProfile(update);
+                setLoading(false);
+            })
+            .catch(() => {
+                toastRef.current.show('Error al actualizar el avatar');
+            });
+    }
     
     return (
         <View style={styles.viewUserInfo}>
