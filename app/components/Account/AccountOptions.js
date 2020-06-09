@@ -1,14 +1,39 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import {ListItem} from 'react-native-elements';
+import Modal from '../Modal';
 
 export default function AccountOptions(props) {
 
     const {userInfo, toastRef} = props;
+    const [showModal, setShowModal] = useState(true)
+    const [renderComponent, setRenderComponent] = useState(null)
     
     const selectComponent = (key) => {
-        console.log('click!!');
-        console.log(key);
+        switch (key) {
+            case 'displayName':
+                setRenderComponent(
+                    <Text>Cambiando nombres y apellidos</Text>
+                );
+                setShowModal(true);
+                break;
+            case 'email':
+                setRenderComponent(
+                    <Text>Cambiando email</Text>
+                );
+                setShowModal(true);
+                break;
+            case 'password':
+                setRenderComponent(
+                    <Text>Cambiando password</Text>
+                );
+                setShowModal(true);
+                break;
+            default:
+                setRenderComponent(null);
+                setShowModal(false);
+                break;
+        }
     }
     const menuOptions = generateOptions(selectComponent);
 
@@ -33,6 +58,11 @@ export default function AccountOptions(props) {
                         onPress={menu.onPress}
                     />                    
                 ))
+            }
+            { renderComponent &&
+                <Modal isVisible={showModal} setIsVisible={setShowModal}>
+                    {renderComponent}
+                </Modal>
             }
         </View>
     );
