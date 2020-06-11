@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, Text } from 'react-native';
 import {ListItem} from 'react-native-elements';
 import Modal from '../Modal';
+import ChangeDisplayNameFunction from './ChangeDisplayNameForm';
 
 export default function AccountOptions(props) {
 
@@ -13,7 +14,11 @@ export default function AccountOptions(props) {
         switch (key) {
             case 'displayName':
                 setRenderComponent(
-                    <Text>Cambiando nombres y apellidos</Text>
+                    <ChangeDisplayNameFunction
+                        displayName={userInfo.displayName}
+                        setShowModal={ setShowModal }
+                        toastRef={toastRef}
+                    />
                 );
                 setShowModal(true);
                 break;
@@ -25,7 +30,7 @@ export default function AccountOptions(props) {
                 break;
             case 'password':
                 setRenderComponent(
-                    <Text>Cambiando password</Text>
+                    <ChangeDisplayNameFunction/>
                 );
                 setShowModal(true);
                 break;
