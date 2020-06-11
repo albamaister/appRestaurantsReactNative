@@ -6,7 +6,7 @@ import ChangeDisplayNameFunction from './ChangeDisplayNameForm';
 
 export default function AccountOptions(props) {
 
-    const {userInfo, toastRef} = props;
+    const {userInfo, toastRef, setReloadUserInfo} = props;
     const [showModal, setShowModal] = useState(true)
     const [renderComponent, setRenderComponent] = useState(null)
     
@@ -18,6 +18,7 @@ export default function AccountOptions(props) {
                         displayName={userInfo.displayName}
                         setShowModal={ setShowModal }
                         toastRef={toastRef}
+                        setReloadUserInfo={setReloadUserInfo}
                     />
                 );
                 setShowModal(true);
