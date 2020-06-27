@@ -11,9 +11,9 @@ export default function AddRestaurantForm(props) {
     const [restaurantName, setRestaurantName] = useState('');
     const [restaurantAddress, setRestaurantAddress] = useState('');
     const [restaurantDescription, setRestaurantDescription] = useState('');
-    const [imageSelected, setImageSelected] = useState([]);
+    const [imagesSelected, setImageSelected] = useState([]);
 
-    console.log(imageSelected);
+    console.log(imagesSelected);
 
     const addRestaurant = () => {
         console.log('ok!!');
@@ -31,7 +31,7 @@ export default function AddRestaurantForm(props) {
            />
            <UploadImage
                 toastRef={toastRef}
-                imageSelected={imageSelected}
+                imagesSelected={imagesSelected}
                 setImageSelected={setImageSelected}
            />
            <Button 
@@ -70,7 +70,7 @@ function FormAdd(props) {
 
 function UploadImage(props) {
 
-    const { toastRef, setImageSelected, imageSelected } = props;
+    const { toastRef, setImageSelected, imagesSelected } = props;
 
     const imageSelect = async () => {
         const resultPermissons = await Permissions.askAsync(
@@ -93,20 +93,48 @@ function UploadImage(props) {
             } else {
                 console.log(result.uri);
                 // setImageSelected(result.uri);
-                setImageSelected(...imageSelected, result.uri);
+                setImageSelected([...imagesSelected, result.uri]);
             }
         }
     }
 
+    const removeImage = (image) => {        
+
+        Alert.alert(
+            'Eliminar Imagen',
+            'Estas seguro que quieres eliminar la imagen?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Eliminar', onPress: () => {
+                    setImageSelected(imagesSelected.filter( imageUrl => imageUrl !== image ));
+                }}
+            ],
+            { cancelable: false }
+        )
+    }
+
+
+    console.log(imagesSelected.length);
+
     return(
         <View style={styles.viewImages}>
-            <Icon
-                type='material-community'
-                name='camera'
-                color='#7a7a7a'
-                containerStyle={styles.containerIcon}
-                onPress={imageSelect}
-            />
+            { imagesSelected.length < 5 &&            
+                <Icon
+                    type='material-community'
+                    name='camera'
+                    color='#7a7a7a'
+                    containerStyle={styles.containerIcon}
+                    onPress={imageSelect}
+                />
+            }
+            { imagesSelected.map( (imageRestaurant, index)=> (
+                <Avatar
+                    key={index}
+                    style={styles.miniatureAvatar}
+                    source={{uri: imageRestaurant}}
+                    onPress={() => removeImage(imageRestaurant)}
+                />
+            ) ) }
         </View>
     )
 }
@@ -145,5 +173,10 @@ const styles = StyleSheet.create({
         height: 70,
         width: 70,
         backgroundColor: '#e3e3e3'
+    },
+    miniatureAvatar: {
+        width: 70,
+        height: 70,
+        marginRight: 10
     }
 });
