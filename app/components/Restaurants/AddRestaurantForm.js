@@ -18,14 +18,11 @@ export default function AddRestaurantForm(props) {
     const [restaurantDescription, setRestaurantDescription] = useState('');
     const [imagesSelected, setImageSelected] = useState([]);
     const [isVisibleMap, setIsVisibleMap] = useState(false);    
-
-    console.log(imagesSelected);
+    const [locationrestaurant, setLocationrestaurant] = useState(null);    
 
     const addRestaurant = () => {
         console.log('ok!!');
-        console.log(restaurantName);
-        console.log(restaurantAddress);
-        console.log(restaurantDescription);
+        console.log(locationrestaurant);
     }
 
     return(
@@ -51,6 +48,7 @@ export default function AddRestaurantForm(props) {
                 isVisibleMap={isVisibleMap}
                 setIsVisibleMap={setIsVisibleMap}
                 toastRef={toastRef}
+                setLocationrestaurant={setLocationrestaurant}
             />
         </ScrollView>
     )
@@ -99,7 +97,7 @@ function FormAdd(props) {
 
 function Map(props) {
 
-    const { isVisibleMap, setIsVisibleMap, toastRef } = props;
+    const { isVisibleMap, setIsVisibleMap, toastRef, setLocationrestaurant } = props;
     const [location, setLocation] = useState(null);
 
     useEffect(() => {
@@ -124,6 +122,12 @@ function Map(props) {
         })()
     }, [])
 
+    const confirmLocation = () => {
+        setLocationrestaurant(location);
+        toastRef.current.show('Localizacion guardada correctamente');
+        setIsVisibleMap(false);
+    }
+
     return(
         <Modal isVisible={isVisibleMap} setIsVisible={setIsVisibleMap}>
             <View>
@@ -138,6 +142,21 @@ function Map(props) {
                         />
                     </MapView>
                 )}
+                <View style={styles.viewMapBtn}>
+                    <Button 
+                        title='Guardar Ubicacion'
+                        containerStyle={styles.viewMapContainerBtnSave}
+                        buttonStyle={styles.viewMapBtnSave}
+                        onPress={confirmLocation}
+
+                    />
+                    <Button 
+                        title='Cancelar Ubicacion' 
+                        containerStyle={styles.viewMapContainerBtnCancel}
+                        buttonStyle={styles.viewMapBtnCancel}
+                        onPress={() => setIsVisibleMap(false)}
+                    />
+                </View>
             </View>
         </Modal>
     )
@@ -166,8 +185,7 @@ function UploadImage(props) {
                 toastRef.current.show(
                     'Has cerrado la galeria sin seleccionar ninguna imagen', 2000
                 )
-            } else {
-                console.log(result.uri);
+            } else {                
                 setImageSelected([...imagesSelected, result.uri]);
             }
         }
@@ -259,5 +277,22 @@ const styles = StyleSheet.create({
     mapStyle: {
         width: '100%',
         height: 550
+    },
+    viewMapBtn: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 10
+    },
+    viewMapContainerBtnCancel: {
+        paddingLeft: 5
+    },
+    viewMapBtnCancel: {
+        backgroundColor: '#a60d0d'
+    },
+    viewMapContainerBtnSave: {
+        paddingRight: 5
+    },
+    viewMapBtnSave: {
+        backgroundColor: '#00a680'
     }
 });
