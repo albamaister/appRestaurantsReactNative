@@ -10,6 +10,8 @@ import Modal from '../Modal';
 import { firebaseApp } from '../../utils/firebase';
 import firebase from 'firebase/app';
 import 'firebase/storage';
+import 'firebase/firestore';
+const db = firebase.firestore(firebaseApp);
 
 
 const WidthScreen = Dimensions.get('window').width;
@@ -35,9 +37,29 @@ export default function AddRestaurantForm(props) {
             toastRef.current.show('Tienes que localizar el restaurante en el mapa');
         } else {
             setIsLoading(true);
-            uploadImageStorage().then(response => {
-                console.log(response);
-                setIsLoading(false);
+            uploadImageStorage().then(response => {                                
+                db.collection('restaurants')
+                    .add({
+                        name: restaurantName,
+                        address: restaurantAddress,
+                        description: restaurantDescription,
+                        location: locationrestaurant,
+                        images: response,
+                        rating: 0,
+                        ratingTotal: 0,
+                        quantityVoting: 0,
+                        createdAt: new Date(),
+                        createdBy: firebaseApp.auth().currentUser.uid
+                    })
+                    .then(() => {
+                        setIsLoading(false);
+                        navigation.navigate('restaurants');
+                    }).catch(() => {
+                        setIsLoading(false);
+                        toastRef.current.show(
+                            'Error al subir el restaurante, intentelo mas tarde'
+                        )
+                    })
             });            
         }
     }
