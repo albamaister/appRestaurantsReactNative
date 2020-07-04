@@ -25,10 +25,10 @@
       "supportsTablet": false
     },
     "android": {
-      "package": "com.andresalbas.tenedores",
+      "package": "com.andresalbas.cincotenedores",
       "config": {
         "googleMaps": {
-          "apiKey": "YOUR-API"
+          "apiKey": "AIzaSyBejZD5b5oytajumMiklYplnhP-pS3h0fs"
         }
       },
       "permissions": ["CAMERA_ROLL", "READ_EXTERNAL_STORAGE","WRITE_EXTERNAL_STORAGE", "LOCATION", "ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
