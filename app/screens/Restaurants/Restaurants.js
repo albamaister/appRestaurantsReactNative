@@ -1,6 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {StyleSheet, View, Text } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { useFocusEffect } from '@react-navigation/native';
 import {firebaseApp} from '../../utils/firebase';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -26,23 +27,25 @@ export default function Restaurants(props) {
         })
     }, [])
 
-    useEffect(() => {
-        db.collection('restaurants').get().then((snap) => {
-            setTotalRestaurants(snap.size);
-        });
-        let resultRestaurants = [];
-        db.collection('restaurants').orderBy('createdAt', 'desc').limit(limitRestaurants).get().then((response) => {
-            // console.log(response);
-            setStartRestaurants(response.docs[response.docs.length - 1]);
-            response.forEach((doc) => {
-                // console.log(doc.id);
-                const restaurant = doc.data();
-                restaurant.id = doc.id;
-                resultRestaurants = [...resultRestaurants, restaurant];
+    useFocusEffect(
+        useCallback(() => {
+            db.collection('restaurants').get().then((snap) => {
+                setTotalRestaurants(snap.size);
             });
-            setRestaurants(resultRestaurants);
-        });
-    }, [])
+            let resultRestaurants = [];
+            db.collection('restaurants').orderBy('createdAt', 'desc').limit(limitRestaurants).get().then((response) => {
+                // console.log(response);
+                setStartRestaurants(response.docs[response.docs.length - 1]);
+                response.forEach((doc) => {
+                    // console.log(doc.id);
+                    const restaurant = doc.data();
+                    restaurant.id = doc.id;
+                    resultRestaurants = [...resultRestaurants, restaurant];
+                });
+                setRestaurants(resultRestaurants);
+            });
+        }, [])
+    );
 
     const handleLoadMore = () => {
         let resultRestaurants = [];
