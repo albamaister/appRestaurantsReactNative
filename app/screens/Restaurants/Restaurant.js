@@ -60,8 +60,7 @@ export default function Restaurant(props) {
             />
             <ListReviews 
                 navigation={navigation} 
-                idRestaurant={restaurant.id} 
-                setRating={setRating}                 
+                idRestaurant={restaurant.id}                               
             />
         </ScrollView>
     )
