@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
 import { Rating, ListItem, Icon } from 'react-native-elements';
+import {useFocusEffect} from '@react-navigation/native';
 import Loading from '../../components/Loading';
 import Carousel from '../../components/Carousel';
 import Map from '../../components/Map';
@@ -24,16 +25,19 @@ export default function Restaurant(props) {
 
     navigation.setOptions({title: name});
 
-    useEffect(() => {
-        db.collection('restaurants').doc(id)
-            .get()
-            .then((response) => {
-                const data = response.data();
-                data.id = response.id;
-                setRestaurant(data);
-                setRating(data.rating);
-            })
-    }, [])
+    useEffect(
+        useCallback(() => {
+            db.collection('restaurants').doc(id)
+                .get()
+                .then((response) => {
+                    const data = response.data();
+                    data.id = response.id;
+                    setRestaurant(data);
+                    setRating(data.rating);
+                })
+        }, [])
+    );
+
 
     if (!restaurant) return <Loading isVisible={true} text='Cargando...'/>
 
