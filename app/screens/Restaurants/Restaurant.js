@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
 import { Rating, ListItem, Icon } from 'react-native-elements';
 import {useFocusEffect} from '@react-navigation/native';
+import Toast from 'react-native-easy-toast';
 import Loading from '../../components/Loading';
 import Carousel from '../../components/Carousel';
 import Map from '../../components/Map';
@@ -21,9 +22,16 @@ export default function Restaurant(props) {
     const { id, name } = route.params;
     const [restaurant, setRestaurant] = useState(null);   
     const [rating, setRating] = useState(0);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [userLogged, setUserLogged] = useState(false);
+    const toastRef = useRef();
         
 
     navigation.setOptions({title: name});
+
+    firebase.auth().onAuthStateChanged(user => {
+        user ? setUserLogged(true) : setUserLogged(false);
+    });
 
     useEffect(
         useCallback(() => {
@@ -38,11 +46,29 @@ export default function Restaurant(props) {
         }, [])
     );
 
+    const addFavorite = () => {
+        console.log('Aniador a favoritos');
+    }
+
+    const removeFavorite = () => {
+        console.log('eliminar de favoritos');
+    }
+
 
     if (!restaurant) return <Loading isVisible={true} text='Cargando...'/>
 
     return (
         <ScrollView vertical style={styles.viewBody}>
+            <View style={styles.viewFavorite}>
+                <Icon
+                    type='material-community'
+                    name={ isFavorite ? 'heart' : 'heart-outline' }
+                    onPress={isFavorite ? removeFavorite : addFavorite}
+                    color={ isFavorite ? '#f00' : '#000'}
+                    size={35}
+                    underlayColor='transparent'
+                />
+            </View>
             <Carousel
                 arrayImages={restaurant.images}
                 height={250}
@@ -61,6 +87,11 @@ export default function Restaurant(props) {
             <ListReviews 
                 navigation={navigation} 
                 idRestaurant={restaurant.id}                               
+            />
+            <Toast
+                ref={toastRef}
+                position='center'
+                opacity={0.9}
             />
         </ScrollView>
     )
@@ -159,5 +190,15 @@ const styles = StyleSheet.create({
     containerListItem: {
         borderBottomColor: '#d8d8d8',
         borderBottomWidth: 1
+    },
+    viewFavorite: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        zIndex: 2,
+        backgroundColor: '#fff',
+        borderBottomLeftRadius: 100,
+        padding: 5,
+        paddingLeft: 15
     }
 })
