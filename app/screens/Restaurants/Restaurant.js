@@ -32,7 +32,7 @@ export default function Restaurant(props) {
         user ? setUserLogged(true) : setUserLogged(false);
     });
 
-    useEffect(
+    useFocusEffect(
         useCallback(() => {
             db.collection('restaurants').doc(id)
                 .get()
@@ -44,6 +44,22 @@ export default function Restaurant(props) {
                 })
         }, [])
     );
+
+    useEffect(() => {
+
+        if ( userLogged && restaurant ) {
+            db.collection('favorites')
+                .where('idRestaurant', '==', restaurant.id)
+                .where('idUser', '==', firebase.auth().currentUser.uid)
+                .get()
+                .then((response) => {
+                    if ( response.docs.length === 1) {
+                        setIsFavorite(true);
+                    }
+                })
+        }
+        
+    }, [userLogged, restaurant])
 
     const addFavorite = () => {
         if ( !userLogged ) {
