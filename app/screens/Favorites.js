@@ -1,6 +1,6 @@
 import React, {useState, useRef, useCallback} from 'react';
 import { StyleSheet, View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { Image, Icon, Botton } from 'react-native-elements';
+import {Icon, Button} from 'react-native-elements';
 import {useFocusEffect} from '@react-navigation/native';
 import Loading from '../components/Loading';
 
@@ -10,8 +10,9 @@ import 'firebase/firestore';
 
 const db = firebase.firestore(firebaseApp);
 
-export default function Favorites() {
-    const [restaurants, setRestaurants] = useState(null);
+export default function Favorites(props) {
+    const { navigation } = props;
+    const [restaurants, setRestaurants] = useState([]);
     const [userLoged, setUserLoged] = useState(false);
 
     firebase.auth().onAuthStateChanged((user) => {
@@ -53,12 +54,10 @@ export default function Favorites() {
         return Promise.all(arrayRestaurants);
     }
 
-    if (!restaurants) {
-        return <Loading isVisible={true} text='Cargando Restaurantes'/>
-    } else if ( restaurants.length === 0 ) {
-        return <NotFoundRestaurants/>
+    if ( !userLoged ) {
+        return <UserNoLogged navigation={navigation}/>
     }
-    
+
     return (
         <View>
             <Text>Favorites.lll..</Text>
@@ -73,4 +72,23 @@ function NotFoundRestaurants() {
             <Text style={{fontSize: 20, fontWeight: 'bold'}}>No tienes restaurantes en tus listas</Text>
         </View>
     )
+}
+
+function UserNoLogged(props) {
+    const {navigation} = props;
+    return (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <Icon type='material-community' name='alert-outline' size={50}/>
+            <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
+                Necesitas estar logeado para ver esta seccion
+            </Text>
+            <Button
+                title= 'Ir al login'
+                containerStyle={{marginTop: 20, width: '80%'}}
+                buttonStyle={{backgroundColor: '#00a680'}}
+                onPress={() => navigation.navigate('account',{screen: 'login'})}
+
+            />
+        </View>
+    ) 
 }
