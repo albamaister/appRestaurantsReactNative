@@ -72,7 +72,7 @@ export default function Favorites(props) {
             {restaurants ? (
                 <FlatList
                     data={restaurants}
-                    renderItem={(restaurant) => <Restaurant restaurant={restaurant} setIsLoading={setIsLoading} toastRef={toastRef} setReloadData={setReloadData}/>}
+                    renderItem={(restaurant) => <Restaurant restaurant={restaurant} setIsLoading={setIsLoading} toastRef={toastRef} setReloadData={setReloadData} navigation={navigation}/>}
                     keyExtractor={(item, index) => index.toString()}
                 />
             ): (
@@ -116,7 +116,7 @@ function UserNoLogged(props) {
 }
 
 function Restaurant(props) {
-    const { restaurant, setIsLoading, toastRef, setReloadData } = props;
+    const { restaurant, setIsLoading, toastRef, setReloadData, navigation } = props;
     const { id, name, images } = restaurant.item;
 
     const confirmRemoveFavorite = () => {
@@ -166,7 +166,7 @@ function Restaurant(props) {
     }
     return (
         <View style={styles.restaurant}>
-            <TouchableOpacity onPress={() => console.log('ir')}>
+            <TouchableOpacity onPress={() => navigation.navigate('restaurants', { screen: 'restaurant', params: {id} })}>
                 <Image
                     resizeMode='cover'
                     style={styles.image}
