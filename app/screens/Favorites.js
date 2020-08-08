@@ -12,7 +12,7 @@ const db = firebase.firestore(firebaseApp);
 
 export default function Favorites(props) {
     const { navigation } = props;
-    const [restaurants, setRestaurants] = useState([]);
+    const [restaurants, setRestaurants] = useState(null);
     const [userLoged, setUserLoged] = useState(false);
 
     firebase.auth().onAuthStateChanged((user) => {
@@ -58,9 +58,24 @@ export default function Favorites(props) {
         return <UserNoLogged navigation={navigation}/>
     }
 
+    if ( restaurants?.length ===0 ) {
+        return <NotFoundRestaurants/>
+    }
+
     return (
-        <View>
-            <Text>Favorites.lll..</Text>
+        <View style={styles.viewBody}>
+            {restaurants ? (
+                <FlatList
+                    data={restaurants}
+                    renderItem={(restaurant) => <Restaurant restaurant={restaurant} />}
+                    keyExtractor={(item, index) => index.toString()}
+                />
+            ): (
+                <View style={styles.loaderRestaurants}> 
+                    <ActivityIndicator size='large' />
+                    <Text style={{textAlign: 'center'}}>Cargando restaurantes</Text>
+                </View>
+            )}
         </View>
     )
 }
@@ -92,3 +107,26 @@ function UserNoLogged(props) {
         </View>
     ) 
 }
+
+function Restaurant(props) {
+    const { restaurant } = props;
+    const { name } = restaurant.item;
+    return (
+        <View>
+            <Text>
+                {name}
+            </Text>
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    viewBody: {
+        flex: 1,
+        backgroundColor: '#f2f2f2'
+    },
+    loaderRestaurants: {
+        marginTop: 10,
+        marginBottom: 10
+    }
+})
