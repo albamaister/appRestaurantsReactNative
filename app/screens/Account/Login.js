@@ -20,7 +20,7 @@ export default function Login() {
                 </View>
                 <Divider style={styles.divider}/>
                 <View style={styles.viewContainer}>
-                    <LoginFacebook/>
+                    <LoginFacebook toastRef={toastRef}/>
                 </View>
                 <Toast ref={toastRef} position='center' opacity={0.9}/>
         </ScrollView>
